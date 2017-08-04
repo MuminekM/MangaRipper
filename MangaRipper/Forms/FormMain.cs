@@ -61,11 +61,11 @@ namespace MangaRipper.Forms
             PrepareSpecificDirectory();
         }
 
-        public void SetTitles(IEnumerable<Title> titles)
+        public void SetTitles(IEnumerable<Site> sites)
         {
             btnSearchSites.Enabled = true;
             var SearchResults = new SearchResult();
-            SearchResults.SetResult(titles);
+            SearchResults.SetResult(sites);
             SearchResults.Show();
         }
 

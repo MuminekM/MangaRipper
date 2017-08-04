@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MangaRipper.Core.Providers;
 using NLog;
+using System.Collections.Generic;
+using MangaRipper.Core.Models;
 
 namespace MangaRipper.Presenters
 {
@@ -21,7 +23,9 @@ namespace MangaRipper.Presenters
         {
             var worker = FrameworkProvider.GetWorker();
             var titles = await worker.FindTitlesListAsync(obj);
-            View.SetTitles(titles);
+            var Sites = new List<Site>();
+            Sites.Add(new Site("MangaHere", titles));
+            View.SetTitles(Sites);
         }
         private async Task OnFindChapters(string obj)
         {

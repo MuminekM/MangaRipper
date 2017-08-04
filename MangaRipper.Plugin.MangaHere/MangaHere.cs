@@ -13,7 +13,8 @@ using HtmlAgilityPack;
 namespace MangaRipper.Plugin.MangaHere
 {
     /*a href="http://www.mangahere.co/manga/baka_to_test_to_shoukanjuu_dya/" class="manga_info name_one" rel="Baka to Test to Shoukanjuu‎ Dya">Baka to Test to Shoukanjuu‎ Dya</a>
-				Latest Updated: <a class="name_two" href="http://www.mangahere.co/manga/baka_to_test_to_shoukanjuu_dya/c003/">Ch.3</a>*/
+				Latest Updated: <a class="name_two" href="http://www.mangahere.co/manga/baka_to_test_to_shoukanjuu_dya/c003/">Ch.3</a>
+*/
     /// <summary>
     /// Support find chapters and images from MangaHere
     /// </summary>
@@ -40,9 +41,7 @@ namespace MangaRipper.Plugin.MangaHere
                 string latest = item.SelectSingleNode(".//a[@class=\"name_two\"]").InnerText;
                 Title title = new Title(name, url, latest);
                 titles.Add(title);
-                //Title title = new Title() string(/*/book[1]/title/@lang)
             }
-            //var titles = parser.Parse("<a class=\"color_0077\" href=\"(?<Value>http://[^\"]+)\"[^<]+>(?<Name>[^<]+)</a>", input, "Name");
             return titles;
         }
 

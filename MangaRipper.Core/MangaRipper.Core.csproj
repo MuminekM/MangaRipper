@@ -78,6 +78,8 @@
     <Compile Include="Models\Chapter.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\DownloadChapterTask.cs" />
+    <Compile Include="Models\Site.cs" />
+    <Compile Include="Models\Title.cs" />
     <Compile Include="Providers\FrameworkProvider.cs" />
     <Compile Include="Interfaces\IMangaService.cs" />
     <Compile Include="Services\DownloadService.cs" />
