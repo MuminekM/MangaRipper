@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Jurassic;
+using HtmlAgilityPack;
 
 namespace MangaRipper.Plugin.KissManga
 {
@@ -54,6 +55,22 @@ namespace MangaRipper.Plugin.KissManga
                 _chko = chko as string;
             }
             _decryptor = new KissMangaTextDecryption(_iv, _chko);
+        }
+
+        public override async Task<IEnumerable<Title>> FindTitles(string keyword, CancellationToken cancellationToken)
+        {
+            var downloader = new DownloadService();
+            var parser = new ParserHelper();
+            var titles = new List<Title>();
+            string input = await downloader.DownloadStringAsync("http://www.mangahere.co/search.php?name=" + keyword, cancellationToken);
+
+            var htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(input);
+
+            var htmlBody = htmlDoc.DocumentNode.SelectNodes("/*/div[@class=result_search/dl/dt");
+
+            //var titles = parser.Parse("<a class=\"color_0077\" href=\"(?<Value>http://[^\"]+)\"[^<]+>(?<Name>[^<]+)</a>", input, "Name");
+            return titles;
         }
 
         public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)

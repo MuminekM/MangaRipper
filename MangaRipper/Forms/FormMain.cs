@@ -51,6 +51,7 @@ namespace MangaRipper.Forms
         }
 
         public Func<string, Task> FindChaptersClicked { get; set; }
+        public Func<string, Task> FindTitlesClicked { get; set; }
 
         public void SetChapters(IEnumerable<Chapter> chapters)
         {
@@ -58,6 +59,14 @@ namespace MangaRipper.Forms
             dgvChapter.DataSource = chapters.ToList();
             PrefixLogic();
             PrepareSpecificDirectory();
+        }
+
+        public void SetTitles(IEnumerable<Title> titles)
+        {
+            btnSearchSites.Enabled = true;
+            var SearchResults = new SearchResult();
+            SearchResults.SetResult(titles);
+            SearchResults.Show();
         }
 
         private void btnGetChapter_Click(object sender, EventArgs e)
@@ -462,6 +471,19 @@ namespace MangaRipper.Forms
         public void ShowMessageBox(string caption, string text, MessageBoxButtons buttons, MessageBoxIcon icon)
         {
             MessageBox.Show(text, caption, buttons, icon);
+        }
+
+        private void btnSearchSites_Click(object sender, EventArgs e)
+        {
+            if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            {
+                MessageBox.Show("An Internet connection has not been detected.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Logger.Error("Aborting chapter retrieval, no Internet connection.");
+                return;
+            }
+            btnSearchSites.Enabled = false;
+            var title = tbSearchBox.Text;
+            FindTitlesClicked(title);
         }
     }
 }

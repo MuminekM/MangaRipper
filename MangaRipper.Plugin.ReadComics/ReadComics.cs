@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
+using HtmlAgilityPack;
 
 namespace MangaRipper.Plugin.ReadComics
 {
@@ -24,6 +25,23 @@ namespace MangaRipper.Plugin.ReadComics
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private static readonly Uri HostUri = new Uri("http://readcomics.tv");
+
+
+        public override async Task<IEnumerable<Title>> FindTitles(string keyword, CancellationToken cancellationToken)
+        {
+            var downloader = new DownloadService();
+            var parser = new ParserHelper();
+            var titles = new List<Title>();
+            string input = await downloader.DownloadStringAsync("http://www.mangahere.co/search.php?name=" + keyword, cancellationToken);
+
+            var htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(input);
+
+            var htmlBody = htmlDoc.DocumentNode.SelectNodes("/*/div[@class=result_search/dl/dt");
+
+          //  var titles = parser.Parse("<a class=\"color_0077\" href=\"(?<Value>http://[^\"]+)\"[^<]+>(?<Name>[^<]+)</a>", input, "Name");
+            return titles;
+        }
 
         public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {

@@ -9,6 +9,7 @@ using MangaRipper.Core.Interfaces;
 using MangaRipper.Core.Models;
 using MangaRipper.Core.Services;
 using NLog;
+using HtmlAgilityPack;
 
 namespace MangaRipper.Plugin.MangaStream
 {
@@ -18,6 +19,23 @@ namespace MangaRipper.Plugin.MangaStream
     public class MangaStream : MangaService
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
+
+
+        public override async Task<IEnumerable<Title>> FindTitles(string keyword, CancellationToken cancellationToken)
+        {
+            var downloader = new DownloadService();
+            var parser = new ParserHelper();
+            var titles = new List<Title>();
+            string input = await downloader.DownloadStringAsync("http://www.mangahere.co/search.php?name=" + keyword, cancellationToken);
+
+            var htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(input);
+
+            var htmlBody = htmlDoc.DocumentNode.SelectNodes("/*/div[@class=result_search/dl/dt");
+
+           // var titles = parser.Parse("<a class=\"color_0077\" href=\"(?<Value>http://[^\"]+)\"[^<]+>(?<Name>[^<]+)</a>", input, "Name");
+            return titles;
+        }
 
         public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress,
             CancellationToken cancellationToken)

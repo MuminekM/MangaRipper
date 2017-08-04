@@ -8,16 +8,43 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 
 namespace MangaRipper.Plugin.MangaHere
 {
-
+    /*a href="http://www.mangahere.co/manga/baka_to_test_to_shoukanjuu_dya/" class="manga_info name_one" rel="Baka to Test to Shoukanjuu‎ Dya">Baka to Test to Shoukanjuu‎ Dya</a>
+				Latest Updated: <a class="name_two" href="http://www.mangahere.co/manga/baka_to_test_to_shoukanjuu_dya/c003/">Ch.3</a>*/
     /// <summary>
     /// Support find chapters and images from MangaHere
     /// </summary>
     public class MangaHere : MangaService
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
+
+        public override async Task<IEnumerable<Title>> FindTitles(string keyword, CancellationToken cancellationToken)
+        {
+            var downloader = new DownloadService();
+            var parser = new ParserHelper();
+            var titles = new List<Title>();
+            string input = await downloader.DownloadStringAsync("http://www.mangahere.co/search.php?name=" + keyword, cancellationToken);
+
+            var htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(input);
+
+            var htmlTitles = htmlDoc.DocumentNode.SelectNodes("//div[@class=\"result_search\"]/dl/dt");
+            foreach (HtmlNode item in htmlTitles)
+            {
+                var node = item.SelectSingleNode(".//a[@class=\"manga_info name_one\"]");
+                string url = node.Attributes["href"].Value;
+                string name = node.InnerText;
+                string latest = item.SelectSingleNode(".//a[@class=\"name_two\"]").InnerText;
+                Title title = new Title(name, url, latest);
+                titles.Add(title);
+                //Title title = new Title() string(/*/book[1]/title/@lang)
+            }
+            //var titles = parser.Parse("<a class=\"color_0077\" href=\"(?<Value>http://[^\"]+)\"[^<]+>(?<Name>[^<]+)</a>", input, "Name");
+            return titles;
+        }
 
         public override async Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress, CancellationToken cancellationToken)
         {

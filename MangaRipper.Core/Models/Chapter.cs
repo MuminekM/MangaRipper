@@ -14,4 +14,17 @@ namespace MangaRipper.Core.Models
             Url = url;
         }
     }
+
+    public class Title
+    {
+        public string OriginalName { get; }
+        public string Url { get; }
+        public string Latest { get; }
+        public Title(string originalName, string url, string latest)
+        {
+            OriginalName = originalName;
+            Url = url;
+            Latest = latest;
+        }
+    }
 }

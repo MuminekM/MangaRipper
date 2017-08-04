@@ -100,6 +100,28 @@ namespace MangaRipper.Core.Controllers
             });
         }
 
+        public async Task<IEnumerable<Title>> FindTitlesListAsync(string keyword)
+        {
+            Logger.Info("> FindChapters: {0}", keyword);
+            return await Task.Run(async () =>
+            {
+                try
+                {
+                    await _sema.WaitAsync();
+                    return await FindTitlesInternal(keyword);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex, "Failed to find titles: {0}", keyword);
+                    throw;
+                }
+                finally
+                {
+                    _sema.Release();
+                }
+            });
+        }
+
         private async Task DownloadChapter(DownloadChapterTask task, string mangaLocalPath, IProgress<int> progress)
         {
             var chapter = task.Chapter;
@@ -202,6 +224,13 @@ namespace MangaRipper.Core.Controllers
             var chapters = await service.FindChapters(mangaPath, progress, _source.Token);
             progress.Report(100);
             return chapters;
+        }
+
+        private async Task<IEnumerable<Title>> FindTitlesInternal(string keyword)
+        {
+            var service = FrameworkProvider.GetService("http://www.mangahere.co");
+            var titles = await service.FindTitles(keyword, _source.Token);
+            return titles;
         }
     }
 }

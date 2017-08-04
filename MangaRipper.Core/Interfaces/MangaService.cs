@@ -22,6 +22,9 @@ namespace MangaRipper.Core.Interfaces
 
         public abstract bool Of(string link);
 
+        public abstract Task<IEnumerable<Title>> FindTitles(string keyword,
+            CancellationToken cancellationToken);
+
         public abstract Task<IEnumerable<Chapter>> FindChapters(string manga, IProgress<int> progress,
             CancellationToken cancellationToken);
 

@@ -27,6 +27,14 @@ namespace MangaRipper.Core.Interfaces
         bool Of(string link);
 
         /// <summary>
+        /// Find all titles matching keyword in supported websites
+        /// </summary>
+        /// <param name="keyword"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IEnumerable<Title>> FindTitles(string keyword, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Find all chapters inside a manga
         /// </summary>
         /// <param name="manga"></param>

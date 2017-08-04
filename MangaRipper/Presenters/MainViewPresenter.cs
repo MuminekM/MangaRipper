@@ -14,8 +14,15 @@ namespace MangaRipper.Presenters
         {
             View = view;
             View.FindChaptersClicked = OnFindChapters;
+            View.FindTitlesClicked = OnFindTitles;
         }
 
+        private async Task OnFindTitles(string obj)
+        {
+            var worker = FrameworkProvider.GetWorker();
+            var titles = await worker.FindTitlesListAsync(obj);
+            View.SetTitles(titles);
+        }
         private async Task OnFindChapters(string obj)
         {
             try
